@@ -31,7 +31,6 @@ USER gennifer_user
 
 # Copy the current directory contents into the container at /app
 COPY . /app
-RUN mv /app/gurobi.lic $HOME/gurobi.lic
 
 # Start the Flask app
 CMD ["flask", "--app", "bkb_grn", "run", "--host", "0.0.0.0", "--debug"]

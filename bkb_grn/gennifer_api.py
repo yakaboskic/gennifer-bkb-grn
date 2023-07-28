@@ -1,3 +1,5 @@
+import os
+import contextlib
 import pandas as pd
 import numpy as np
 
@@ -39,11 +41,11 @@ def run(data, feature_states, srcs, palim):
     '''
     Function to run BKB learning algorithm.
     '''
-    bkb_learner = bkb_learner = BKBLearner(backend='gobnilp', score='mdl_ent', distributed=False, palim=palim)
-    bkb_learner.fit(data, feature_states, srcs=srcs, collapse=True)
+    with contextlib.redirect_stderr(open(os.devnull, 'w')):
+        bkb_learner = bkb_learner = BKBLearner(backend='gobnilp', score='mdl_ent', distributed=False, palim=palim)
+        bkb_learner.fit(data, feature_states, srcs=srcs, collapse=True)
 
     # Return networkx data
-    print('Got here')
     return bkb_learner.learned_bkb.construct_nx_graph(only_rvs=True, show_num_edges=True)
 
 def parseOutput(nx_data):
