@@ -43,6 +43,7 @@ def run(data, feature_states, srcs, palim):
     bkb_learner.fit(data, feature_states, srcs=srcs, collapse=True)
 
     # Return networkx data
+    print('Got here')
     return bkb_learner.learned_bkb.construct_nx_graph(only_rvs=True, show_num_edges=True)
 
 def parseOutput(nx_data):

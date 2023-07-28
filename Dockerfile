@@ -1,6 +1,13 @@
-FROM julia:1.9
+# Use the official Python image as the base image
+FROM python:3.11
 
-RUN apt-get update && apt-get install -y time python3-dev build-essential python3-pip
+# Install graphviz
+RUN apt update -y
+RUN apt install graphviz graphviz-dev -y
+
+# Update pip and install requirements
+RUN pip install --upgrade pip
+RUN pip install toml setuptools
 
 # add app user
 RUN groupadd gennifer_user && useradd -ms /bin/bash -g gennifer_user gennifer_user
@@ -10,20 +17,21 @@ WORKDIR /app
 
 COPY ./requirements.txt /app
 
-# Install the required packages
-RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
+# Install the required packages for the api
+RUN pip install -r requirements.txt
+
+# Clone pybkb and install dependencies and install
+RUN git clone --single-branch --branch master https://github.com/di2ag/pybkb.git
+RUN cd pybkb && pip install -r requirements.txt && python setup.py install
 
 # chown all the files to the app user
 RUN chown -R gennifer_user:gennifer_user /app
 
 USER gennifer_user
 
-# Julia libs we want
-COPY ./installPackages.jl /app
-RUN julia installPackages.jl
-
 # Copy the current directory contents into the container at /app
 COPY . /app
+RUN mv /app/gurobi.lic $HOME/gurobi.lic
 
 # Start the Flask app
-CMD ["flask", "--app", "pidc", "run", "--host", "0.0.0.0", "--debug"]
+CMD ["flask", "--app", "bkb_grn", "run", "--host", "0.0.0.0", "--debug"]

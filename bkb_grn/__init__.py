@@ -43,13 +43,18 @@ def create_app(test_config=None):
     api = Api(app)
 
     parser = reqparse.RequestParser()
-    parser.add_argument('zenodo_id')
+    parser.add_argument('zenodo_id', required=True)
+    parser.add_argument('palim')
 
     class RunAlgorithm(Resource):
         
         def post(self):
             args = parser.parse_args()
-            task = create_bkb_grn_task.delay(args["zenodo_id"])
+            palim = args.get('palim')
+            # Assign Default values if not passed.
+            if not palim:
+                palim = 2
+            task = create_bkb_grn_task.delay(args["zenodo_id"], palim)
             return {"task_id": task.id}, 200
 
         def get(self, task_id):
