@@ -1,0 +1,10 @@
+name: bkb_grn
+channels:
+    - conda-forge
+dependencies:
+    - python=3.11.*
+    - mamba
+    - pip
+    - poetry=1.*
+platforms:
+    - linux-64
