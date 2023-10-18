@@ -76,6 +76,7 @@ def create_app(test_config=None):
                     "edge_weight_type": 'significance',
                     "edge_weight_description": "The percentage of inferences in which the random variable association appeared. Higher means more significant.",
                     "directed": True,
+                    "hyperparameters": None,
                     }
             return info, 200
 
